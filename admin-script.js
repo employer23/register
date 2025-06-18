@@ -137,43 +137,47 @@ function closeDetailModal() {
 }
 
 // 删除单个记录
-async function deleteRecord(id) {
+// 删除记录
+function deleteRecord(id) {
     if (!confirm('确定要删除这条记录吗？')) return;
     
     try {
-        const response = await fetch(`${API_BASE}/registrations/${id}`, {
-            method: 'DELETE'
-        });
-        const result = await response.json();
+        // 从本地存储获取数据
+        const registrations = getRegistrations();
         
-        if (result.success) {
-            alert('删除成功');
-            refreshData();
-        } else {
-            alert('删除失败：' + (result.error || '未知错误'));
-        }
+        // 找到并删除记录
+        const updatedRegistrations = registrations.filter((r, index) => {
+            // 使用ID或索引匹配
+            return String(r.id || index) !== String(id);
+        });
+        
+        // 保存回本地存储
+        localStorage.setItem('registrations', JSON.stringify(updatedRegistrations));
+        
+        alert('删除成功');
+        refreshData();
     } catch (error) {
-        alert('删除失败，请检查网络连接');
+        alert('删除失败');
         console.error('删除错误:', error);
     }
 }
 
 // 导出功能
-async function exportToCSV() {
-    const regs = await getRegistrations();
+function exportToCSV() {
+    const regs = getRegistrations();
     if(!regs.length) return alert('无数据');
     
     const headers = ['ID', '姓名', '手机号', '学校', '年级', '报名类型', '小队名称', '小队人数', '报名时间'];
-    const csvData = regs.map(r => [
-        r.id,
+    const csvData = regs.map((r, index) => [
+        r.id || index,
         r.name,
         r.phone,
         r.school,
         r.grade,
-        r.registration_type === 'team' ? '小队报名' : '个人报名',
-        r.team_name || '',
-        r.team_size || '',
-        r.created_at ? new Date(r.created_at).toLocaleString('zh-CN') : ''
+        r.registrationType === 'team' ? '小队报名' : '个人报名',
+        r.teamName || '',
+        r.teamSize || '',
+        r.timestamp ? new Date(r.timestamp).toLocaleString('zh-CN') : ''
     ]);
     
     const csv = [headers, ...csvData].map(row => 
@@ -187,8 +191,8 @@ async function exportToCSV() {
     a.click();
 }
 
-async function exportToJSON() {
-    const regs = await getRegistrations();
+function exportToJSON() {
+    const regs = getRegistrations();
     if(!regs.length) return alert('无数据');
     const blob = new Blob([JSON.stringify(regs,null,2)], {type:'application/json'});
     const a = document.createElement('a');
@@ -197,8 +201,8 @@ async function exportToJSON() {
     a.click();
 }
 
-async function exportToExcel() {
-    const regs = await getRegistrations();
+function exportToExcel() {
+    const regs = getRegistrations();
     if(!regs.length) return alert('无数据');
     
     // 转换数据格式以便Excel显示
@@ -221,23 +225,17 @@ async function exportToExcel() {
 }
 
 // 清空数据
-async function clearAllData() {
-    if(!confirm('确定要清空所有报名数据吗？此操作不可撤销！')) return;
+function clearAllData() {
+    if(!confirm('确定要清空所有本地报名数据吗？此操作不可撤销！')) return;
     
     try {
-        const response = await fetch(`${API_BASE}/registrations/all`, {
-            method: 'DELETE'
-        });
-        const result = await response.json();
+        // 清空本地存储中的数据
+        localStorage.removeItem('registrations');
         
-        if (result.success) {
-            alert(result.message);
-            refreshData();
-        } else {
-            alert('清空失败：' + (result.error || '未知错误'));
-        }
+        alert('所有本地报名数据已清空');
+        refreshData();
     } catch (error) {
-        alert('清空失败，请检查网络连接');
+        alert('清空失败');
         console.error('清空错误:', error);
     }
 }

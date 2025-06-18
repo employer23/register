@@ -11,13 +11,17 @@
     <div class="container">
         <div class="form-container">
             <h1>俯瞰越城 揽胜无遗暑期活动</h1>
-            <p class="subtitle">请填写以下信息完成报名</p>              <form id="registrationForm" name="registration" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
-                <!-- 隐藏字段，Netlify需要 -->
+            <p class="subtitle">请填写以下信息完成报名</p>
+            
+            <!-- 静态HTML表单，确保Netlify可以正确识别 -->
+            <!-- 注意：此表单使用最可靠的配置，确保Netlify Forms能正常工作 -->
+            <form name="registration" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success.html">
+                <!-- 必须添加的隐藏字段 -->
                 <input type="hidden" name="form-name" value="registration" />
                 
-                <!-- 隐藏的蜜罐字段，防止垃圾邮件 -->
+                <!-- 蜜罐防垃圾字段 -->
                 <div style="display: none;">
-                    <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                    <label>不要填写此项: <input name="bot-field" /></label>
                 </div>
                 
                 <!-- 基础信息 -->
@@ -93,19 +97,19 @@
                             <option value="12">12人</option>
                         </select>
                     </div>
-                </div>                <button type="submit" class="submit-btn">提交报名</button>
+                </div>
+
+                <!-- 提交按钮 -->
+                <button type="submit" class="submit-btn">提交报名</button>
             </form>
-              <div style="margin-top: 30px; text-align: center; font-size: 0.9rem; color: #666;">
+            
+            <!-- 调试工具链接 -->
+            <div style="margin-top: 30px; text-align: center; font-size: 0.9rem; color: #666;">
                 遇到问题？
                 <a href="troubleshoot.html" style="color: #007bff; text-decoration: none;">故障排除</a> |
                 <a href="form-test.html" style="color: #007bff; text-decoration: none;">测试表单</a> |
                 <a href="simple-test.html" style="color: #007bff; text-decoration: none;">简单表单</a> |
                 <a href="admin-netlify.html" style="color: #007bff; text-decoration: none;">管理员页面</a>
-                
-                <div style="margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 5px; text-align: left;">
-                    <strong>⚠️ 提示：</strong> 如果此表单提交出现404错误，请尝试
-                    <a href="index-new.html" style="color: #856404; font-weight: bold; text-decoration: underline;">使用新版表单</a>
-                </div>
             </div>
         </div>
     </div>
@@ -120,6 +124,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script-new.js"></script>
 </body>
 </html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>预渲染表单 - Netlify Forms</title>
+</head>
+<body>
+    <!-- 
+        这个页面是专门用于Netlify构建时扫描表单结构的
+        它包含所有你网站上使用的Netlify表单，但设置为隐藏
+        确保form的name属性和字段与你的实际表单完全一致
+    -->
+    <form name="registration" netlify netlify-honeypot="bot-field" hidden>
+        <input type="hidden" name="form-name" value="registration" />
+        <input type="text" name="name" />
+        <input type="tel" name="phone" />
+        <input type="text" name="school" />
+        <select name="grade"></select>
+        <input type="radio" name="registrationType" />
+        <input type="text" name="teamName" />
+        <select name="teamSize"></select>
+        <input name="bot-field" />
+    </form>
+    
+    <form name="test-form" netlify netlify-honeypot="bot-field" hidden>
+        <input type="hidden" name="form-name" value="test-form" />
+        <input type="text" name="test-name" />
+        <input type="email" name="test-email" />
+        <input type="text" name="test-message" />
+        <input name="bot-field" />
+    </form>
+    
+    <form name="simple-test" netlify hidden>
+        <input type="hidden" name="form-name" value="simple-test" />
+        <input type="text" name="test-name" />
+        <input type="text" name="test-message" />
+    </form>
+    
+    <p>此页面仅用于Netlify Forms配置，不显示给用户。</p>
+    <p>它确保Netlify能在构建时识别所有表单结构。</p>
+    <p><a href="index-new.html">返回主页</a></p>
+</body>
+</html>

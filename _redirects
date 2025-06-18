@@ -1,5 +1,11 @@
 # Netlify Forms redirect rules
 # This ensures form submissions are handled correctly
 
-# Redirect form submissions back to homepage with success
-/  /  200
+# 表单提交成功跳转
+/success    /success.html    200
+
+# 表单处理
+/    /.netlify/functions/submission-created    200
+
+# SPA重定向（放最后）
+/*    /index.html    200

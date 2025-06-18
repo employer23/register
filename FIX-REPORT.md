@@ -128,5 +128,49 @@ if (response.ok || response.status === 200 || response.status === 302) {
 ---
 
 **修复完成时间**：2025年6月18日  
-**Git提交hash**：054ebf5  
+**Git提交hash**：4e3eb00  
 **部署状态**：已推送到GitHub，Netlify自动部署中
+
+## 更新 v3 (2025年6月18日)
+
+### 表单仍然404问题
+
+经过分析，我们发现Netlify Forms仍然无法识别表单结构，导致表单提交返回404。因此我们采取了最彻底的解决方案：
+
+### 终极解决方案：
+
+#### 1. 创建全新表单流程
+- **index-new.html**：重新设计的报名表单，使用原生HTML提交
+- **script-new.js**：移除JS拦截提交，让表单使用HTML原生提交方式
+- **success.html**：创建专门的成功页面，表单提交后跳转
+- **prerender-form.html**：创建预渲染表单页面，确保Netlify能在构建时扫描到表单结构
+
+#### 2. 遵循Netlify Forms最佳实践
+- **添加action属性**：`action="/success.html"`确保提交后跳转
+- **保留form-name字段**：确保字段存在且与表单name属性一致
+- **使用netlify属性**：在预渲染表单中使用`netlify`简写属性
+- **避免JS拦截**：让表单使用浏览器原生提交行为
+
+#### 3. 完善Netlify配置
+- **更新netlify.toml**：添加专门的表单提交处理规则
+- **更新_redirects**：确保重定向规则正确设置
+- **预渲染表单页面**：确保Netlify能在构建时识别所有表单
+
+### 新文件结构：
+- `index-new.html` - 新的报名表单页面
+- `script-new.js` - 新的交互脚本
+- `success.html` - 表单提交成功页面
+- `prerender-form.html` - 预渲染表单结构页面
+- `deploy-fix-v3.bat` - 新的部署脚本
+
+### 测试流程：
+1. 等待Netlify部署完成（1-3分钟）
+2. 访问prerender-form.html确认Netlify扫描到表单
+3. 检查Netlify后台Forms部分是否有表单出现
+4. 测试simple-test.html验证基础功能
+5. 测试index-new.html验证完整报名流程
+
+⚠️ **重要**: 如果修复后表单依然404，考虑以下方案：
+1. 联系Netlify支持
+2. 尝试其他表单解决方案（如Google Forms嵌入）
+3. 使用本地存储+定期手动导出方案

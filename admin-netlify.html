@@ -88,6 +88,14 @@
             <div class="guide-header">
                 <h1>📊 管理员后台指南</h1>
                 <p>使用 Netlify Forms 收集和管理报名数据</p>
+                
+                <div style="background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                    <h3 style="color: #dc2626; margin: 0 0 8px 0;">⚠️ 重要提示</h3>
+                    <p style="color: #7f1d1d; margin: 0;">
+                        如果你之前访问的是 <code>admin.html</code> 页面，那里的数据是基于浏览器本地存储的，<strong>无法跨设备同步</strong>。
+                        现在请使用下面的 Netlify 后台查看所有真实的报名数据。
+                    </p>
+                </div>
             </div>
 
             <div class="netlify-dashboard">
@@ -132,6 +140,24 @@
                 <p>1. 在 Forms 页面，点击 <code>Settings and notifications</code></p>
                 <p>2. 添加邮箱地址，有新报名时会自动发送邮件通知</p>
                 <p>3. 也可以设置 Slack、Webhook 等通知方式</p>
+            </div>
+
+            <div class="step">
+                <h3>❗ 重要：数据迁移说明</h3>
+                <p style="color: #dc2626; font-weight: 600;">如果你之前有报名数据但在 Netlify 后台看不到，原因如下：</p>
+                <p>• 旧版本使用浏览器 localStorage 存储，只在本地设备有效</p>
+                <p>• 新版本使用 Netlify Forms 云端存储，支持跨设备访问</p>
+                <p>• <strong>从现在开始的新报名</strong>才会保存到 Netlify 云端</p>
+                <p>• 旧数据仍在原设备的浏览器中，可通过 <code>admin.html</code> 查看并手动导出</p>
+            </div>
+            
+            <div class="step">
+                <h3>🔄 如何处理旧数据（可选）</h3>
+                <p>如果你需要旧的报名数据：</p>
+                <p>1. 在原设备访问 <code>admin.html</code> 页面</p>
+                <p>2. 导出旧数据为 CSV 或 JSON 格式</p>
+                <p>3. 手动整理或导入到新系统中</p>
+                <p>4. 从现在开始，所有新报名都会自动保存到 Netlify</p>
             </div>
 
             <div style="text-align: center; margin-top: 40px;">

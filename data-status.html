@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据状态检查</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .status-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .status-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .status-ok { border-left: 5px solid #48bb78; }
+        .status-warning { border-left: 5px solid #ed8936; }
+        .status-error { border-left: 5px solid #e53e3e; }
+        .data-count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #48bb78; color: white; }
+        .btn-warning { background: #ed8936; color: white; }
+        .data-preview {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status-container">
+            <h1 style="text-align: center; color: #2d3748; margin-bottom: 40px;">📊 数据状态检查</h1>
+
+            <!-- 本地数据检查 -->
+            <div class="status-card" id="localDataCard">
+                <h3>🖥️ 本地浏览器数据 (localStorage)</h3>
+                <div class="data-count" id="localCount">检查中...</div>
+                <p id="localStatus">正在检查本地存储的报名数据...</p>
+                <div id="localPreview" class="data-preview" style="display: none;"></div>
+                <div class="btn-group">
+                    <button onclick="exportLocalData()" class="btn btn-warning" id="exportBtn" disabled>导出本地数据</button>
+                    <a href="admin.html" class="btn btn-primary">查看本地数据管理</a>
+                </div>
+            </div>
+
+            <!-- Netlify Forms 状态 -->
+            <div class="status-card status-ok">
+                <h3>☁️ Netlify Forms 云端数据</h3>
+                <div class="data-count">✅ 已启用</div>
+                <p>新的报名数据将自动保存到 Netlify 云端，支持跨设备访问。</p>
+                <div class="btn-group">
+                    <a href="https://app.netlify.com/" target="_blank" class="btn btn-success">打开 Netlify 后台</a>
+                    <a href="admin-netlify.html" class="btn btn-primary">查看使用指南</a>
+                </div>
+            </div>
+
+            <!-- 表单状态检查 -->
+            <div class="status-card" id="formStatusCard">
+                <h3>📝 表单配置状态</h3>
+                <div id="formStatus">检查中...</div>
+                <div class="btn-group">
+                    <a href="index.html" class="btn btn-primary">访问报名页面</a>
+                    <button onclick="testFormSubmission()" class="btn btn-warning">测试表单提交</button>
+                </div>
+            </div>
+
+            <!-- 操作建议 -->
+            <div class="status-card status-warning">
+                <h3>🎯 操作建议</h3>
+                <ol style="line-height: 1.8;">
+                    <li><strong>如果有本地数据</strong>：点击"导出本地数据"保存备份</li>
+                    <li><strong>测试新表单</strong>：提交一条测试报名，检查是否正常</li>
+                    <li><strong>查看 Netlify 数据</strong>：在 Netlify 后台查看新的报名</li>
+                    <li><strong>以后管理数据</strong>：使用 Netlify 后台，不再依赖本地存储</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 检查本地数据
+        function checkLocalData() {
+            const localData = localStorage.getItem('registrations');
+            const localCard = document.getElementById('localDataCard');
+            const localCount = document.getElementById('localCount');
+            const localStatus = document.getElementById('localStatus');
+            const localPreview = document.getElementById('localPreview');
+            const exportBtn = document.getElementById('exportBtn');
+
+            if (localData) {
+                try {
+                    const data = JSON.parse(localData);
+                    const count = data.length;
+                    
+                    localCount.textContent = `${count} 条记录`;
+                    localStatus.innerHTML = `发现 <strong>${count}</strong> 条本地存储的报名记录。这些数据只在当前浏览器可见。`;
+                    
+                    // 显示数据预览
+                    localPreview.style.display = 'block';
+                    localPreview.textContent = JSON.stringify(data.slice(0, 3), null, 2) + (count > 3 ? '\n...(更多数据)' : '');
+                    
+                    localCard.className = 'status-card status-warning';
+                    exportBtn.disabled = false;
+                } catch (e) {
+                    localCount.textContent = '数据损坏';
+                    localStatus.textContent = '本地数据格式错误，无法读取。';
+                    localCard.className = 'status-card status-error';
+                }
+            } else {
+                localCount.textContent = '0 条记录';
+                localStatus.textContent = '当前浏览器没有本地存储的报名数据，或者数据已被清除。';
+                localCard.className = 'status-card status-ok';
+            }
+        }
+
+        // 导出本地数据
+        function exportLocalData() {
+            const localData = localStorage.getItem('registrations');
+            if (!localData) {
+                alert('没有本地数据可导出');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(localData);
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `local-registrations-backup-${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('本地数据已导出！建议保存好备份文件。');
+            } catch (e) {
+                alert('导出失败：' + e.message);
+            }
+        }
+
+        // 检查表单配置
+        function checkFormStatus() {
+            fetch('index.html')
+                .then(response => response.text())
+                .then(html => {
+                    const formStatus = document.getElementById('formStatus');
+                    if (html.includes('data-netlify="true"')) {
+                        formStatus.innerHTML = '✅ 表单已正确配置 Netlify Forms，新报名将自动保存到云端。';
+                        document.getElementById('formStatusCard').className = 'status-card status-ok';
+                    } else {
+                        formStatus.innerHTML = '❌ 表单配置可能有问题，请检查是否包含 data-netlify="true" 属性。';
+                        document.getElementById('formStatusCard').className = 'status-card status-error';
+                    }
+                })
+                .catch(e => {
+                    document.getElementById('formStatus').innerHTML = '⚠️ 无法检查表单配置状态。';
+                    document.getElementById('formStatusCard').className = 'status-card status-warning';
+                });
+        }
+
+        // 测试表单提交
+        function testFormSubmission() {
+            alert('请手动访问报名页面，填写一条测试数据，然后到 Netlify 后台查看是否收到数据。');
+            window.open('index.html', '_blank');
+        }
+
+        // 页面加载时执行检查
+        window.onload = function() {
+            checkLocalData();
+            checkFormStatus();
+        };
+    </script>
+</body>
+</html>

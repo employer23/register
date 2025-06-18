@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表单故障排除</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .checklist {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .checklist li {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+        .check-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .check-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .check-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .code-block {
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 表单故障排除指南</h1>
+        
+        <div class="alert alert-info">
+            <strong>📋 本页面帮助您诊断和解决表单提交问题</strong><br>
+            如果报名表单出现404错误或提交失败，请按照以下步骤进行检查。
+        </div>
+
+        <h2>1. 环境检查</h2>
+        <div class="test-section">
+            <h3>当前环境状态</h3>
+            <div class="checklist">
+                <div id="env-checks">
+                    <div id="check-location">🔍 检查当前位置...</div>
+                    <div id="check-protocol">🔍 检查协议类型...</div>
+                    <div id="check-domain">🔍 检查域名...</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>2. 表单配置检查</h2>
+        <div class="test-section">
+            <h3>关键配置项</h3>
+            <div class="checklist">
+                <li>✓ 表单需要 <code>data-netlify="true"</code> 属性</li>
+                <li>✓ 表单需要 <code>name</code> 属性</li>
+                <li>✓ 表单需要 <code>method="POST"</code></li>
+                <li>✓ 需要包含隐藏的 <code>form-name</code> 字段</li>
+                <li>✓ 建议包含 <code>data-netlify-honeypot</code> 防垃圾字段</li>
+            </div>
+            
+            <div class="code-block">
+&lt;form name="registration" method="POST" data-netlify="true" data-netlify-honeypot="bot-field"&gt;
+    &lt;input type="hidden" name="form-name" value="registration" /&gt;
+    &lt;!-- 表单字段 --&gt;
+&lt;/form&gt;
+            </div>
+        </div>
+
+        <h2>3. 网络测试</h2>
+        <div class="test-section">
+            <h3>测试表单提交</h3>
+            <p>点击下面的按钮测试网络连接和表单提交功能：</p>
+            
+            <button id="test-network" class="btn">测试网络连接</button>
+            <button id="test-form-submit" class="btn">测试表单提交</button>
+            
+            <div id="test-results"></div>
+        </div>
+
+        <h2>4. 常见问题和解决方案</h2>
+        <div class="test-section">
+            <h3>404 错误</h3>
+            <div class="alert alert-warning">
+                <strong>原因：</strong>
+                <ul>
+                    <li>网站尚未部署到Netlify</li>
+                    <li>表单配置不正确</li>
+                    <li>在本地环境中测试（Netlify Forms只在线上环境工作）</li>
+                </ul>
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>确保网站已部署到Netlify</li>
+                    <li>检查表单的 <code>data-netlify</code> 和 <code>name</code> 属性</li>
+                    <li>在线上环境测试，不要在本地测试</li>
+                </ul>
+            </div>
+
+            <h3>提交成功但收不到数据</h3>
+            <div class="alert alert-warning">
+                <strong>原因：</strong>
+                <ul>
+                    <li>form-name参数不匹配</li>
+                    <li>字段名称包含特殊字符</li>
+                    <li>Netlify尚未识别表单</li>
+                </ul>
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>确保JavaScript中的form-name与HTML中的name属性一致</li>
+                    <li>重新部署网站，让Netlify重新扫描表单</li>
+                    <li>检查Netlify后台的Forms部分</li>
+                </ul>
+            </div>
+
+            <h3>网络错误</h3>
+            <div class="alert alert-warning">
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>检查网络连接</li>
+                    <li>尝试刷新页面</li>
+                    <li>清除浏览器缓存</li>
+                    <li>尝试其他浏览器</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>5. 手动检查步骤</h2>
+        <div class="test-section">
+            <div class="checklist">
+                <li>🔲 确认网站已部署到Netlify</li>
+                <li>🔲 确认当前在线上环境（不是localhost）</li>
+                <li>🔲 检查Netlify后台Forms部分</li>
+                <li>🔲 确认表单HTML配置正确</li>
+                <li>🔲 确认JavaScript提交逻辑正确</li>
+                <li>🔲 测试简化版本表单</li>
+            </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top: 30px;">
+            <strong>💡 提示</strong><br>
+            如果问题仍未解决，可以：
+            <ul>
+                <li>使用 <a href="form-test.html" target="_blank">简化测试表单</a> 进行验证</li>
+                <li>查看浏览器开发者工具的Console和Network面板</li>
+                <li>联系Netlify技术支持</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 环境检查
+            checkEnvironment();
+            
+            // 网络测试按钮
+            document.getElementById('test-network').addEventListener('click', testNetwork);
+            document.getElementById('test-form-submit').addEventListener('click', testFormSubmit);
+        });
+        
+        function checkEnvironment() {
+            const location = window.location;
+            const checksDiv = document.getElementById('env-checks');
+            
+            // 检查位置
+            const locationCheck = document.getElementById('check-location');
+            locationCheck.innerHTML = `📍 当前位置: ${location.href}`;
+            
+            // 检查协议
+            const protocolCheck = document.getElementById('check-protocol');
+            if (location.protocol === 'https:') {
+                protocolCheck.innerHTML = `🔒 协议: HTTPS ✅`;
+                protocolCheck.className = 'check-success';
+            } else if (location.protocol === 'http:' && location.hostname !== 'localhost') {
+                protocolCheck.innerHTML = `⚠️ 协议: HTTP (建议使用HTTPS)`;
+                protocolCheck.className = 'check-warning';
+            } else {
+                protocolCheck.innerHTML = `🔧 协议: ${location.protocol} (本地开发环境)`;
+                protocolCheck.className = 'check-pending';
+            }
+            
+            // 检查域名
+            const domainCheck = document.getElementById('check-domain');
+            if (location.hostname.includes('netlify')) {
+                domainCheck.innerHTML = `🌐 域名: Netlify环境 ✅`;
+                domainCheck.className = 'check-success';
+            } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                domainCheck.innerHTML = `🏠 域名: 本地环境 (Netlify Forms无法工作)`;
+                domainCheck.className = 'check-error';
+            } else {
+                domainCheck.innerHTML = `🌐 域名: ${location.hostname}`;
+                domainCheck.className = 'check-pending';
+            }
+        }
+        
+        function testNetwork() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="alert alert-info">正在测试网络连接...</div>';
+            
+            fetch('/')
+                .then(response => {
+                    if (response.ok) {
+                        resultsDiv.innerHTML = '<div class="alert alert-success">✅ 网络连接正常</div>';
+                    } else {
+                        resultsDiv.innerHTML = `<div class="alert alert-error">❌ 网络错误: ${response.status}</div>`;
+                    }
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="alert alert-error">❌ 网络连接失败: ${error.message}</div>`;
+                });
+        }
+        
+        function testFormSubmit() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="alert alert-info">正在测试表单提交...</div>';
+            
+            const formData = new FormData();
+            formData.append('form-name', 'test');
+            formData.append('test-field', 'test-value');
+            
+            const params = new URLSearchParams();
+            for (const [key, value] of formData.entries()) {
+                params.append(key, value);
+            }
+            
+            fetch('/', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: params.toString()
+            })
+            .then(response => {
+                console.log('Test response:', response);
+                if (response.ok || response.status === 200 || response.status === 302) {
+                    resultsDiv.innerHTML = '<div class="alert alert-success">✅ 表单提交测试成功</div>';
+                } else {
+                    resultsDiv.innerHTML = `<div class="alert alert-error">❌ 表单提交失败: HTTP ${response.status}</div>`;
+                }
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = `<div class="alert alert-error">❌ 表单提交测试失败: ${error.message}</div>`;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -56,20 +56,36 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = '提交中...';
-        submitBtn.disabled = true;
-
-        // 提交到Netlify Forms
+        submitBtn.disabled = true;        // 提交到Netlify Forms
+        // 确保form-name参数正确设置
+        formData.set('form-name', 'registration');
+        
+        // 转换为URLSearchParams以确保正确编码
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+            params.append(key, value);
+        }
+        
         fetch('/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(formData).toString()
-        })
-        .then(response => {
-            if (response.ok) {
-                // 重置按钮状态
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                
+            headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        })        .then(response => {
+            // 详细的响应日志
+            console.log('Response status:', response.status);
+            console.log('Response status text:', response.statusText);
+            console.log('Response URL:', response.url);
+            console.log('Response headers:', [...response.headers.entries()]);
+            
+            // 重置按钮状态
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            
+            // Netlify Forms成功提交通常返回200状态码
+            // 有时可能重定向到thank you页面，状态码为302
+            if (response.ok || response.status === 200 || response.status === 302) {
                 // 显示成功模态框
                 showSuccessModal();
                 
@@ -78,16 +94,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 teamInfo.style.display = 'none';
                 teamNameInput.required = false;
                 teamSizeInput.required = false;
+                
+                console.log('表单提交成功！');
             } else {
-                throw new Error('提交失败');
+                throw new Error(`HTTP ${response.status}: ${response.statusText || '提交失败'}`);
             }
-        })
-        .catch(error => {
+        })        .catch(error => {
             // 重置按钮状态
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
-            alert('提交失败，请重试');
-            console.error('提交错误:', error);
+            
+            console.error('表单提交错误:', error);
+            console.error('错误详情:', error.message);
+            
+            // 更详细的错误提示
+            let errorMessage = '提交失败，请重试';
+            if (error.message.includes('404')) {
+                errorMessage = '表单配置错误（404）。请确保：\n1. 网站已部署到Netlify\n2. 表单具有正确的data-netlify属性\n3. 表单name属性设置正确';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = '网络连接失败，请检查网络连接后重试';
+            } else if (error.message.includes('405')) {
+                errorMessage = '提交方法不被允许，请联系网站管理员';
+            }
+            
+            alert(errorMessage);
         });
     });
 

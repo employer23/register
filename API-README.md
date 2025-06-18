@@ -106,3 +106,77 @@
 
 ## 前端配置
 部署完成后，请将前端代码中的API地址替换为实际部署地址。
+
+## GitHub 自动部署到 Netlify
+
+### 设置自动部署的步骤
+
+#### 方法一：从Netlify连接GitHub（推荐）
+
+1. **登录Netlify**
+   - 访问 https://app.netlify.com/
+   - 用GitHub账号登录
+
+2. **创建新项目**
+   - 点击 "New site from Git"
+   - 选择 "GitHub" 作为Git提供商
+   - 授权Netlify访问你的GitHub账户
+
+3. **选择仓库**
+   - 找到并选择 `employer23/register` 仓库
+   - 点击 "Deploy site"
+
+4. **配置构建设置**
+   - Branch to deploy: `main`
+   - Build command: 留空（静态网站无需构建）
+   - Publish directory: `.`（当前目录）
+   - 点击 "Deploy site"
+
+5. **完成配置**
+   - Netlify会自动部署并给你一个新的网址
+   - 以后每次推送到GitHub的main分支，都会自动重新部署
+
+#### 方法二：更新现有项目连接GitHub
+
+如果你已经有了kexie1.netlify.app项目：
+
+1. **进入项目设置**
+   - 访问 https://app.netlify.com/
+   - 进入你的kexie1项目
+   - 点击 "Site settings"
+
+2. **连接GitHub**
+   - 在左侧菜单点击 "Build & deploy"
+   - 点击 "Link site to Git"
+   - 选择GitHub并授权
+   - 选择 `employer23/register` 仓库
+
+3. **配置部署设置**
+   - Branch: `main`
+   - Build command: 留空
+   - Publish directory: `.`
+   - 点击 "Save"
+
+#### 验证自动部署
+
+1. **测试自动部署**
+   ```bash
+   # 在本地修改一个文件，比如README.md
+   echo "测试自动部署" >> README.md
+   git add .
+   git commit -m "测试自动部署"
+   git push
+   ```
+
+2. **查看部署状态**
+   - 在Netlify项目页面点击 "Deploys"
+   - 你会看到新的部署正在进行
+   - 部署完成后网站会自动更新
+
+#### 自动部署的优势
+
+- ✅ **零手动操作**：代码推送后自动部署
+- ✅ **版本控制**：每次部署都有记录
+- ✅ **回滚功能**：可以快速回滚到之前版本
+- ✅ **预览部署**：Pull Request会自动生成预览
+- ✅ **部署状态**：实时查看部署进度和日志

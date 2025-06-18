@@ -36,36 +36,36 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 获取表单数据
         const formData = new FormData(form);
-        const data = {};
         
-        for (let [key, value] of formData.entries()) {
-            data[key] = value;
-        }
-
         // 验证手机号码格式（简单验证）
         const phonePattern = /^[\d\s\-\(\)]{10,}$/;
-        if (!phonePattern.test(data.phone.replace(/\s/g, ''))) {
+        if (!phonePattern.test(formData.get('phone').replace(/\s/g, ''))) {
             alert('请输入有效的手机号码');
             return;
         }
 
         // 如果是小队报名，验证小队信息
-        if (data.registrationType === 'team') {
-            if (!data.teamName || !data.teamSize) {
+        if (formData.get('registrationType') === 'team') {
+            if (!formData.get('teamName') || !formData.get('teamSize')) {
                 alert('请填写完整的小队信息');
                 return;
             }
-        }        // 新增：提交到API
-        fetch('https://你的API地址/api/registrations', {
+        }
+
+        // 显示提交按钮加载状态
+        const submitBtn = form.querySelector('.submit-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = '提交中...';
+        submitBtn.disabled = true;
+
+        // 提交到Netlify Forms
+        fetch('/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(formData).toString()
         })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
+        .then(response => {
+            if (response.ok) {
                 // 重置按钮状态
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
@@ -79,26 +79,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 teamNameInput.required = false;
                 teamSizeInput.required = false;
             } else {
-                // 重置按钮状态
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                alert('提交失败：' + (result.error || '未知错误'));
+                throw new Error('提交失败');
             }
         })
         .catch(error => {
             // 重置按钮状态
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
-            alert('网络错误，提交失败，请检查网络连接');
+            alert('提交失败，请重试');
             console.error('提交错误:', error);
         });
-        
-        // 删除原来的模拟提交代码，因为现在是真实提交
-        return;        // 显示提交按钮加载状态
-        const submitBtn = form.querySelector('.submit-btn');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = '提交中...';
-        submitBtn.disabled = true;
     });
 
     // 实时表单验证

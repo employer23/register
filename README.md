@@ -1,6 +1,6 @@
 # 报名页面
 
-一个现代化的活动报名表单，支持个人和小队报名。
+一个现代化的活动报名表单，支持个人和小队报名，使用 Netlify Forms 自动收集数据。
 
 ## 功能特点
 
@@ -9,6 +9,8 @@
 - ✅ 条件显示小队信息
 - ✅ 现代化UI设计
 - ✅ 提交成功反馈
+- ✅ Netlify Forms 自动收集数据
+- ✅ 防垃圾邮件保护
 
 ## 报名信息
 
@@ -24,12 +26,29 @@
   - 小队名称
   - 小队人数（2-12人）
 
+## 数据管理
+
+### 查看报名数据
+1. 访问 [Netlify 后台](https://app.netlify.com/)
+2. 进入你的项目（kexie1）
+3. 点击侧边栏的 "Forms" 查看所有提交
+
+### 导出数据
+1. 在 Forms 页面选择表单
+2. 点击 "Export submissions"
+3. 下载 CSV 文件，可用 Excel 打开
+
+### 管理员页面
+- 访问 `admin-netlify.html` 查看详细使用指南
+- 包含完整的数据管理步骤说明
+
 ## 部署到 Netlify
 
-### 方法一：拖拽部署
+### 方法一：拖拽部署（推荐）
 1. 打开 [Netlify](https://app.netlify.com/)
 2. 将整个 `register` 文件夹拖拽到 Netlify 的部署区域
 3. 等待部署完成
+4. 表单会自动启用 Netlify Forms 功能
 
 ### 方法二：Git 部署
 1. 将代码推送到 GitHub 仓库
@@ -37,6 +56,7 @@
 3. 设置构建配置：
    - Build command: 留空
    - Publish directory: `.`
+4. 部署后自动启用 Forms 功能
 
 ## 文件结构
 

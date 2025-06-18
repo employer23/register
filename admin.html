@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台 - 报名数据管理</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-bar"></i>
+                <h2>管理后台</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>数据概览</span>
+                </a>
+                <a href="#registrations" class="nav-item" data-section="registrations">
+                    <i class="fas fa-users"></i>
+                    <span>报名管理</span>
+                </a>
+                <a href="#export" class="nav-item" data-section="export">
+                    <i class="fas fa-download"></i>
+                    <span>数据导出</span>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    返回报名页面
+                </a>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 头部 -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">数据概览</h1>
+                </div>
+                <div class="header-right">
+                    <div class="refresh-btn" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        刷新数据
+                    </div>
+                    <div class="admin-info">
+                        <span>管理员</span>
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 数据概览页面 -->
+            <div class="content-section active" id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalCount">0</h3>
+                            <p>总报名人数</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="individualCount">0</h3>
+                            <p>个人报名</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="teamCount">0</h3>
+                            <p>小队报名</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="todayCount">0</h3>
+                            <p>今日报名</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图表区域 -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>报名趋势</h3>
+                        <canvas id="registrationChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>年级分布</h3>
+                        <canvas id="gradeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 最新报名 -->
+                <div class="recent-registrations">
+                    <h3>最新报名</h3>
+                    <div class="recent-list" id="recentList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报名管理页面 -->
+            <div class="content-section" id="registrations">
+                <div class="table-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="搜索姓名、学校、手机号...">
+                    </div>
+                    <div class="filter-controls">
+                        <select id="typeFilter">
+                            <option value="">全部类型</option>
+                            <option value="individual">个人报名</option>
+                            <option value="team">小队报名</option>
+                        </select>
+                        <select id="gradeFilter">
+                            <option value="">全部年级</option>
+                        </select>
+                        <button class="btn btn-danger" onclick="clearAllData()">
+                            <i class="fas fa-trash"></i>
+                            清空数据
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="registrationTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th>姓名</th>
+                                <th>手机号</th>
+                                <th>学校</th>
+                                <th>年级</th>
+                                <th>报名类型</th>
+                                <th>小队信息</th>
+                                <th>报名时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- 动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 数据导出页面 -->
+            <div class="content-section" id="export">
+                <div class="export-options">
+                    <div class="export-card">
+                        <div class="export-icon">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <h3>导出 Excel</h3>
+                        <p>将所有报名数据导出为 Excel 文件</p>
+                        <button class="btn btn-success" onclick="exportToExcel()">
+                            <i class="fas fa-download"></i>
+                            导出 Excel
+                        </button>
+                    </div>
+                    
+                    <div class="export-card">
+                        <div class="export-icon">
+                            <i class="fas fa-file-csv"></i>
+                        </div>
+                        <h3>导出 CSV</h3>
+                        <p>将所有报名数据导出为 CSV 文件</p>
+                        <button class="btn btn-primary" onclick="exportToCSV()">
+                            <i class="fas fa-download"></i>
+                            导出 CSV
+                        </button>
+                    </div>
+                    
+                    <div class="export-card">
+                        <div class="export-icon">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <h3>导出 JSON</h3>
+                        <p>将所有报名数据导出为 JSON 文件</p>
+                        <button class="btn btn-info" onclick="exportToJSON()">
+                            <i class="fas fa-download"></i>
+                            导出 JSON
+                        </button>
+                    </div>
+                </div>
+
+                <div class="export-filters">
+                    <h3>导出筛选</h3>
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label>日期范围</label>
+                            <div class="date-range">
+                                <input type="date" id="startDate">
+                                <span>至</span>
+                                <input type="date" id="endDate">
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <label>报名类型</label>
+                            <select id="exportTypeFilter">
+                                <option value="">全部</option>
+                                <option value="individual">个人报名</option>
+                                <option value="team">小队报名</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>年级</label>
+                            <select id="exportGradeFilter">
+                                <option value="">全部年级</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统设置页面 -->
+            <div class="content-section" id="settings">
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <h3>数据管理</h3>
+                        <div class="setting-item">
+                            <label>自动备份</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="autoBackup" checked>
+                                <span class="slider"></span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>数据保留天数</label>
+                            <input type="number" id="retentionDays" value="365" min="1" max="3650">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3>导入数据</h3>
+                        <div class="import-section">
+                            <input type="file" id="importFile" accept=".json,.csv" style="display: none;">
+                            <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">
+                                <i class="fas fa-upload"></i>
+                                选择文件
+                            </button>
+                            <p class="import-info">支持 JSON 和 CSV 格式</p>
+                        </div>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3>系统信息</h3>
+                        <div class="system-info">
+                            <div class="info-item">
+                                <span>版本:</span>
+                                <span>1.0.0</span>
+                            </div>
+                            <div class="info-item">
+                                <span>数据存储:</span>
+                                <span>本地存储</span>
+                            </div>
+                            <div class="info-item">
+                                <span>最后更新:</span>
+                                <span id="lastUpdate">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>报名详情</h3>
+                <span class="close" onclick="closeDetailModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>

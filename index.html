@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俯瞰越城 揽胜无遗暑期活动报名</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>活动报名</h1>
+            <p class="subtitle">请填写以下信息完成报名</p>
+            
+            <form id="registrationForm">
+                <!-- 基础信息 -->
+                <div class="form-group">
+                    <label for="name">姓名 <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">号码 <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="school">学校 <span class="required">*</span></label>
+                    <input type="text" id="school" name="school" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="grade">年级 <span class="required">*</span></label>
+                    <select id="grade" name="grade" required>
+                        <option value="">请选择年级</option>
+                        <option value="一年级">一年级</option>
+                        <option value="二年级">二年级</option>
+                        <option value="三年级">三年级</option>
+                        <option value="四年级">四年级</option>
+                        <option value="五年级">五年级</option>
+                        <option value="六年级">六年级</option>
+                        <option value="初一">初一</option>
+                        <option value="初二">初二</option>
+                        <option value="初三">初三</option>
+                    </select>
+                </div>
+
+                <!-- 报名形式 -->
+                <div class="form-group">
+                    <label>报名形式 <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="registrationType" value="individual" required>
+                            <span class="radio-custom"></span>
+                            个人报名
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="registrationType" value="team" required>
+                            <span class="radio-custom"></span>
+                            小队报名
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 小队信息（条件显示） -->
+                <div id="teamInfo" class="team-info" style="display: none;">
+                    <div class="form-group">
+                        <label for="teamName">小队名称 <span class="required">*</span></label>
+                        <input type="text" id="teamName" name="teamName">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="teamSize">小队人数 <span class="required">*</span></label>
+                        <select id="teamSize" name="teamSize">
+                            <option value="">请选择人数</option>
+                            <option value="2">2人</option>
+                            <option value="3">3人</option>
+                            <option value="4">4人</option>
+                            <option value="5">5人</option>
+                            <option value="6">6人</option>
+                            <option value="7">7人</option>
+                            <option value="8">8人</option>
+                            <option value="9">9人</option>
+                            <option value="10">10人</option>
+                            <option value="11">11人</option>
+                            <option value="12">12人</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">提交报名</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 成功提示模态框 -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-icon">✓</div>
+            <h3>报名成功！</h3>
+            <p>您的报名信息已提交成功，我们会尽快与您联系。</p>
+            <button onclick="closeModal()" class="modal-btn">确定</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

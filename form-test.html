@@ -76,8 +76,10 @@
     <div class="test-container">
         <h1>Netlify Forms 提交测试</h1>
         <p>这是一个简化的测试表单，用于验证Netlify Forms是否正常工作。</p>
-        
-        <form name="test-form" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <form name="test-form" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+            <!-- 隐藏字段，Netlify需要 -->
+            <input type="hidden" name="form-name" value="test-form" />
+            
             <!-- 隐藏的蜜罐字段 -->
             <div style="display: none;">
                 <label>Don't fill this out if you're human: <input name="bot-field" /></label>
@@ -122,9 +124,8 @@
             
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                const formData = new FormData(form);
-                formData.set('form-name', 'test-form');
+                  const formData = new FormData(form);
+                // HTML表单已包含隐藏的form-name字段，无需重复添加
                 
                 // 显示提交状态
                 statusDiv.innerHTML = '<div class="info">正在提交测试数据...</div>';

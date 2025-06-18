@@ -11,8 +11,10 @@
     <div class="container">
         <div class="form-container">
             <h1>俯瞰越城 揽胜无遗暑期活动</h1>
-            <p class="subtitle">请填写以下信息完成报名</p>
-              <form id="registrationForm" name="registration" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+            <p class="subtitle">请填写以下信息完成报名</p>              <form id="registrationForm" name="registration" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+                <!-- 隐藏字段，Netlify需要 -->
+                <input type="hidden" name="form-name" value="registration" />
+                
                 <!-- 隐藏的蜜罐字段，防止垃圾邮件 -->
                 <div style="display: none;">
                     <label>Don't fill this out if you're human: <input name="bot-field" /></label>

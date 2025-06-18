@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最简单的Netlify表单测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🧪 最简Netlify表单测试</h1>
+    <p>这是一个最基本的Netlify Forms测试页面，不使用JavaScript提交。</p>
+    
+    <!-- 最简单的Netlify表单 -->
+    <form name="simple-test" method="POST" data-netlify="true">
+        <input type="hidden" name="form-name" value="simple-test" />
+        
+        <div class="form-group">
+            <label for="test-name">姓名:</label>
+            <input type="text" name="test-name" id="test-name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="test-message">留言:</label>
+            <input type="text" name="test-message" id="test-message" placeholder="测试留言">
+        </div>
+        
+        <button type="submit">直接提交（无JavaScript）</button>
+    </form>
+    
+    <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+        <h3>测试说明：</h3>
+        <ol>
+            <li>这个表单使用原生HTML提交，不依赖JavaScript</li>
+            <li>提交后页面会重新加载或跳转</li>
+            <li>如果配置正确，数据会出现在Netlify后台</li>
+            <li>这是测试Netlify Forms最可靠的方法</li>
+        </ol>
+        
+        <h3>预期行为：</h3>
+        <ul>
+            <li>✅ 如果成功：页面重新加载，可能显示"Thank you"</li>
+            <li>❌ 如果失败：显示404错误页面</li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <a href="index.html">← 返回主报名页面</a> |
+        <a href="form-test.html">JavaScript测试页面</a> |
+        <a href="troubleshoot.html">故障排除</a>
+    </div>
+</body>
+</html>

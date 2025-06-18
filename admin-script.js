@@ -1,31 +1,60 @@
 // 管理员页面脚本
-// 数据从API获取，支持跨设备访问
+// 注意：此页面用于查看本地存储的数据
+// 对于Netlify Forms收集的数据，请访问admin-netlify.html
 
-// API配置
-const API_BASE = 'https://你的API地址/api';
+// 显示重要提示
+function showNetlifyWarning() {
+    const warningDiv = document.createElement('div');
+    warningDiv.innerHTML = `
+        <div style="background: #fff3cd; color: #856404; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #ffeaa7;">
+            <h3 style="margin: 0 0 10px 0;">⚠️ 重要提示</h3>
+            <p style="margin: 5px 0;">此页面只能显示本地浏览器存储的数据。</p>
+            <p style="margin: 5px 0;">要查看Netlify Forms收集的在线数据，请访问：</p>
+            <div style="margin: 15px 0;">
+                <a href="admin-netlify.html" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    🌐 Netlify管理页面
+                </a>
+            </div>
+            <p style="margin: 5px 0; font-size: 14px;">如果您需要查看最新的在线报名数据，建议使用Netlify管理页面。</p>
+        </div>
+    `;
+    
+    const container = document.querySelector('.container');
+    if (container && container.firstChild) {
+        container.insertBefore(warningDiv, container.firstChild);
+    }
+}
 
-// 工具函数
-async function getRegistrations() {
+// 工具函数 - 从本地存储获取数据
+function getRegistrations() {
     try {
-        const response = await fetch(`${API_BASE}/registrations`);
-        if (!response.ok) throw new Error('获取数据失败');
-        return await response.json();
+        const data = localStorage.getItem('registrations');
+        return data ? JSON.parse(data) : [];
     } catch (error) {
-        console.error('获取报名数据失败:', error);
-        alert('获取数据失败，请检查网络连接');
+        console.error('获取本地数据失败:', error);
         return [];
     }
 }
 
-async function getStats() {
-    try {
-        const response = await fetch(`${API_BASE}/stats`);
-        if (!response.ok) throw new Error('获取统计数据失败');
-        return await response.json();
-    } catch (error) {
-        console.error('获取统计数据失败:', error);
-        return { total: 0, individual: 0, team: 0, today: 0 };
-    }
+function getStats() {
+    const registrations = getRegistrations();
+    const total = registrations.length;
+    const individual = registrations.filter(r => r.registrationType === 'individual').length;
+    const team = registrations.filter(r => r.registrationType === 'team').length;
+    
+    // 计算今天的报名数量
+    const today = new Date().toDateString();
+    const todayRegistrations = registrations.filter(r => {
+        const regDate = new Date(r.timestamp).toDateString();
+        return regDate === today;
+    }).length;
+    
+    return {
+        total,
+        individual,
+        team,
+        today: todayRegistrations
+    };
 }
 
 // 页面切换
@@ -46,41 +75,40 @@ navItems.forEach(item => {
 });
 
 // 渲染数据概览
-async function renderDashboard() {
-    const stats = await getStats();
+function renderDashboard() {
+    const stats = getStats();
     document.getElementById('totalCount').textContent = stats.total;
     document.getElementById('individualCount').textContent = stats.individual;
     document.getElementById('teamCount').textContent = stats.team;
     document.getElementById('todayCount').textContent = stats.today;
-    
-    // 最新报名
-    const regs = await getRegistrations();
+      // 最新报名
+    const regs = getRegistrations();
     const recent = regs.slice(0, 5);
     const recentList = document.getElementById('recentList');
     recentList.innerHTML = recent.map(r=>`
         <div class="recent-item">
-            <b>${r.name}</b> - ${r.school} - ${r.grade} - ${r.registration_type==="team"?"小队":"个人"}
+            <b>${r.name}</b> - ${r.school} - ${r.grade} - ${r.registrationType==="team"?"小队":"个人"}
         </div>
     `).join('');
 }
 
 // 渲染表格
-async function renderTable() {
-    const regs = await getRegistrations();
+function renderTable() {
+    const regs = getRegistrations();
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = regs.map((r,i)=>`
         <tr>
-            <td><input type='checkbox' data-id='${r.id}'></td>
+            <td><input type='checkbox' data-id='${r.id||i}'></td>
             <td>${r.name}</td>
             <td>${r.phone}</td>
             <td>${r.school}</td>
             <td>${r.grade}</td>
-            <td>${r.registration_type==="team"?"小队":"个人"}</td>
-            <td>${r.registration_type==="team"?`${r.team_name||""} (${r.team_size||""}人)`:"-"}</td>
-            <td>${r.created_at ? new Date(r.created_at).toLocaleString('zh-CN') : "-"}</td>
+            <td>${r.registrationType==="team"?"小队":"个人"}</td>
+            <td>${r.registrationType==="team"?`${r.teamName||""} (${r.teamSize||""}人)`:"-"}</td>
+            <td>${r.timestamp ? new Date(r.timestamp).toLocaleString('zh-CN') : "-"}</td>
             <td>
                 <button onclick='showDetail(${JSON.stringify(r).replace(/'/g, "\\'")})''>详情</button>
-                <button onclick='deleteRecord(${r.id})' style='margin-left:5px;background:#e53e3e;color:white;'>删除</button>
+                <button onclick='deleteRecord("${r.id||i}")' style='margin-left:5px;background:#e53e3e;color:white;'>删除</button>
             </td>
         </tr>
     `).join('');
@@ -215,15 +243,16 @@ async function clearAllData() {
 }
 
 // 刷新
-async function refreshData() {
-    await renderDashboard();
-    await renderTable();
+function refreshData() {
+    renderDashboard();
+    renderTable();
 }
 
 // 初始化
-window.onload = async function() {
-    await renderDashboard();
-    await renderTable();
+window.onload = function() {
+    showNetlifyWarning(); // 显示Netlify提示
+    renderDashboard();
+    renderTable();
     // 关闭模态框事件
     document.getElementById('detailModal').onclick = function(e){if(e.target===this)closeDetailModal();};
 };

@@ -1,0 +1,5 @@
+# Netlify Forms redirect rules
+# This ensures form submissions are handled correctly
+
+# Redirect form submissions back to homepage with success
+/  /  200

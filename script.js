@@ -57,8 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalText = submitBtn.textContent;
         submitBtn.textContent = '提交中...';
         submitBtn.disabled = true;        // 提交到Netlify Forms
-        // 确保form-name参数正确设置
-        formData.set('form-name', 'registration');
+        // HTML表单已包含隐藏的form-name字段，无需重复添加
         
         // 转换为URLSearchParams以确保正确编码
         const params = new URLSearchParams();
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: params.toString()
-        })        .then(response => {
+        }).then(response => {
             // 详细的响应日志
             console.log('Response status:', response.status);
             console.log('Response status text:', response.statusText);

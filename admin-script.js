@@ -104,6 +104,7 @@ function renderTable() {
             <td>${r.school}</td>
             <td>${r.grade}</td>
             <td>${r.registrationType==="team"?"小队":"个人"}</td>
+            <td>${r.attendTraining==="yes"?"参加":"不参加"}</td>
             <td>${r.registrationType==="team"?`${r.teamName||""} (${r.teamSize||""}人)`:"-"}</td>
             <td>${r.timestamp ? new Date(r.timestamp).toLocaleString('zh-CN') : "-"}</td>
             <td>
@@ -121,12 +122,13 @@ function showDetail(record) {
     html += `<li><b>手机号：</b>${record.phone}</li>`;
     html += `<li><b>学校：</b>${record.school}</li>`;
     html += `<li><b>年级：</b>${record.grade}</li>`;
-    html += `<li><b>报名类型：</b>${record.registration_type === 'team' ? '小队报名' : '个人报名'}</li>`;
-    if (record.registration_type === 'team') {
-        html += `<li><b>小队名称：</b>${record.team_name || '-'}</li>`;
-        html += `<li><b>小队人数：</b>${record.team_size || '-'}人</li>`;
+    html += `<li><b>报名类型：</b>${record.registrationType === 'team' ? '小队报名' : '个人报名'}</li>`;
+    html += `<li><b>参加培训：</b>${record.attendTraining === 'yes' ? '参加培训' : '不参加培训'}</li>`;
+    if (record.registrationType === 'team') {
+        html += `<li><b>小队名称：</b>${record.teamName || '-'}</li>`;
+        html += `<li><b>小队人数：</b>${record.teamSize || '-'}人</li>`;
     }
-    html += `<li><b>报名时间：</b>${record.created_at ? new Date(record.created_at).toLocaleString('zh-CN') : '-'}</li>`;
+    html += `<li><b>报名时间：</b>${record.timestamp ? new Date(record.timestamp).toLocaleString('zh-CN') : '-'}</li>`;
     html += `</ul>`;
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('detailModal').style.display = 'block';
@@ -167,7 +169,7 @@ function exportToCSV() {
     const regs = getRegistrations();
     if(!regs.length) return alert('无数据');
     
-    const headers = ['ID', '姓名', '手机号', '学校', '年级', '报名类型', '小队名称', '小队人数', '报名时间'];
+    const headers = ['ID', '姓名', '手机号', '学校', '年级', '报名类型', '参加培训', '小队名称', '小队人数', '报名时间'];
     const csvData = regs.map((r, index) => [
         r.id || index,
         r.name,
@@ -175,6 +177,7 @@ function exportToCSV() {
         r.school,
         r.grade,
         r.registrationType === 'team' ? '小队报名' : '个人报名',
+        r.attendTraining === 'yes' ? '参加培训' : '不参加培训',
         r.teamName || '',
         r.teamSize || '',
         r.timestamp ? new Date(r.timestamp).toLocaleString('zh-CN') : ''

@@ -84,8 +84,7 @@
             <div style="display: none;">
                 <label>Don't fill this out if you're human: <input name="bot-field" /></label>
             </div>
-            
-            <div class="form-group">
+              <div class="form-group">
                 <label for="test-name">测试姓名:</label>
                 <input type="text" id="test-name" name="test-name" required>
             </div>
@@ -98,6 +97,20 @@
             <div class="form-group">
                 <label for="test-message">测试留言:</label>
                 <input type="text" id="test-message" name="test-message" placeholder="这是一个测试提交">
+            </div>
+            
+            <div class="form-group">
+                <label>是否参加培训测试:</label>
+                <div style="margin: 10px 0;">
+                    <label style="display: inline-block; margin-right: 20px;">
+                        <input type="radio" name="test-training" value="yes" style="margin-right: 5px;">
+                        参加
+                    </label>
+                    <label style="display: inline-block;">
+                        <input type="radio" name="test-training" value="no" style="margin-right: 5px;">
+                        不参加
+                    </label>
+                </div>
             </div>
             
             <button type="submit" class="submit-btn">提交测试</button>

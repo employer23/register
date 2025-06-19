@@ -10,14 +10,14 @@
         这个页面是专门用于Netlify构建时扫描表单结构的
         它包含所有你网站上使用的Netlify表单，但设置为隐藏
         确保form的name属性和字段与你的实际表单完全一致
-    -->
-    <form name="registration" netlify netlify-honeypot="bot-field" hidden>
+    -->    <form name="registration" netlify netlify-honeypot="bot-field" hidden>
         <input type="hidden" name="form-name" value="registration" />
         <input type="text" name="name" />
         <input type="tel" name="phone" />
         <input type="text" name="school" />
         <select name="grade"></select>
         <input type="radio" name="registrationType" />
+        <input type="radio" name="attendTraining" />
         <input type="text" name="teamName" />
         <select name="teamSize"></select>
         <input name="bot-field" />
